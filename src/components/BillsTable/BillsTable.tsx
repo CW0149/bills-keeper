@@ -7,31 +7,14 @@ import {
   TableHead,
   TableRow,
 } from '@mui/material';
-import { endOfMonth } from 'date-fns';
-import { startOfMonth } from 'date-fns/esm';
-import { FC, useMemo } from 'react';
-import { FormattedBill, ToFilterYearAndMonth } from '../../constants';
+import { FC } from 'react';
+import { FormattedBill } from '../../constants';
 
 type Props = {
   data: FormattedBill[];
-  toFilterYearAndMonth: ToFilterYearAndMonth;
 };
 
-export const BillsTable: FC<Props> = ({ data, toFilterYearAndMonth }) => {
-  const toShownData = useMemo(() => {
-    if (!toFilterYearAndMonth) return data;
-
-    const [year, month] = toFilterYearAndMonth;
-    const firstDay = startOfMonth(new Date(year, month - 1));
-    const lastDay = endOfMonth(new Date(year, month - 1));
-
-    return data.filter(
-      (bill) =>
-        bill.timeStamp <= lastDay.getTime() &&
-        bill.timeStamp >= firstDay.getTime()
-    );
-  }, [data, toFilterYearAndMonth]);
-
+export const BillsTable: FC<Props> = ({ data }) => {
   return (
     <TableContainer
       sx={{ maxHeight: 'calc(100vh - 100px)', maxWidth: 800 }}
@@ -47,7 +30,7 @@ export const BillsTable: FC<Props> = ({ data, toFilterYearAndMonth }) => {
           </TableRow>
         </TableHead>
         <TableBody>
-          {toShownData.map((row) => (
+          {data.map((row) => (
             <TableRow
               key={`${row.time}${row.amount}`}
               sx={{ '&:last-child td, &:last-child th': { border: 0 } }}

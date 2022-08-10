@@ -1,15 +1,18 @@
 import { Box } from '@mui/material';
-import { useEffect, useState } from 'react';
+import { endOfMonth, startOfMonth } from 'date-fns';
+import { useEffect, useMemo, useState } from 'react';
 import { usePapaParse } from 'react-papaparse';
 import { BillsFilters } from './components/BillsFilters';
 import { BillsTable } from './components/BillsTable';
 import {
   Bill,
+  BillTypeName,
   Category,
+  DEFAULT_TYPE_SELECTED,
   FormattedBill,
   ToFilterYearAndMonth,
 } from './constants';
-import { getFormatBillData } from './utils/formatter';
+import { getFormatBillData, getGroupedCategories } from './utils/formatter';
 import { fetchBills, fetchCategories } from './utils/request';
 
 function App() {
@@ -17,6 +20,31 @@ function App() {
   const [billsList, setBillsList] = useState([] as FormattedBill[]);
   const [toFilterYearAndMonth, setToFilterYearAndMonth] =
     useState<ToFilterYearAndMonth>(null);
+  const [toFilterType, setToFilterType] = useState<BillTypeName[]>(
+    DEFAULT_TYPE_SELECTED
+  );
+
+  const tableData = useMemo(() => {
+    const filterConditions = [];
+
+    if (toFilterYearAndMonth) {
+      const [year, month] = toFilterYearAndMonth;
+      const firstDay = startOfMonth(new Date(year, month - 1));
+      const lastDay = endOfMonth(new Date(year, month - 1));
+
+      filterConditions.push(
+        (bill: FormattedBill) =>
+          bill.timeStamp <= lastDay.getTime() &&
+          bill.timeStamp >= firstDay.getTime()
+      );
+    }
+
+    filterConditions.push((bill: FormattedBill) =>
+      toFilterType.includes(bill.typeName)
+    );
+
+    return filterConditions.reduce((res, fn) => res.filter(fn), billsList);
+  }, [billsList, toFilterType, toFilterYearAndMonth]);
 
   useEffect(() => {
     const getData = async () => {
@@ -28,7 +56,10 @@ function App() {
         categoriesString
       )) as Category[];
 
-      setBillsList(getFormatBillData(billsData, categoriesData));
+      const billsList = getFormatBillData(billsData, categoriesData);
+      getGroupedCategories(billsList);
+
+      setBillsList(billsList);
     };
 
     getData();
@@ -53,13 +84,12 @@ function App() {
   return (
     <Box p={2}>
       <BillsFilters
-        value={toFilterYearAndMonth}
+        dateValue={toFilterYearAndMonth}
         setToFilterYearAndMonth={setToFilterYearAndMonth}
+        typeValue={toFilterType}
+        setToFilterType={setToFilterType}
       />
-      <BillsTable
-        data={billsList}
-        toFilterYearAndMonth={toFilterYearAndMonth}
-      />
+      <BillsTable data={tableData} />
     </Box>
   );
 }

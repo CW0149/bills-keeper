@@ -1,4 +1,10 @@
-import { Bill, Category, FormattedBill, typeToTypeName } from '../constants';
+import {
+  Bill,
+  Category,
+  FormattedBill,
+  GroupedCategories,
+  typeToTypeName,
+} from '../constants';
 
 export const getFormatBillData = (
   bills: Bill[],
@@ -18,4 +24,21 @@ export const getFormatBillData = (
     name: cateIdToCate[bill.category]?.name || bill.category,
     amount: `${Number(bill.amount).toFixed(2)}￥`,
   }));
+};
+
+export const getGroupedCategories = (
+  data: FormattedBill[]
+): GroupedCategories => {
+  const result = data.reduce((res, item) => {
+    const { typeName } = item;
+
+    const set = res[typeName] || new Set([]);
+    set.add(item);
+
+    res[typeName] = set;
+
+    return res;
+  }, {} as any);
+
+  return result;
 };

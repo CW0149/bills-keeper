@@ -23,3 +23,10 @@ export type FormattedBill = {
 };
 
 export type ToFilterYearAndMonth = [number, number] | null;
+
+export type GroupedCategories = Record<BillTypeName, Category[]>;
+
+export type TypeOption = {
+  type: BillType;
+  name: BillTypeName;
+};

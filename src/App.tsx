@@ -20,7 +20,7 @@ function App() {
   const [billsList, setBillsList] = useState([] as FormattedBill[]);
   const [toFilterYearAndMonth, setToFilterYearAndMonth] =
     useState<ToFilterYearAndMonth>(null);
-  const [toFilterType, setToFilterType] = useState<BillTypeName[]>(
+  const [toFilterTypeName, setToFilterTypeName] = useState<BillTypeName[]>(
     DEFAULT_TYPE_SELECTED
   );
 
@@ -40,11 +40,11 @@ function App() {
     }
 
     filterConditions.push((bill: FormattedBill) =>
-      toFilterType.includes(bill.typeName)
+      toFilterTypeName.includes(bill.typeName)
     );
 
     return filterConditions.reduce((res, fn) => res.filter(fn), billsList);
-  }, [billsList, toFilterType, toFilterYearAndMonth]);
+  }, [billsList, toFilterTypeName, toFilterYearAndMonth]);
 
   useEffect(() => {
     const getData = async () => {
@@ -86,8 +86,8 @@ function App() {
       <BillsFilters
         dateValue={toFilterYearAndMonth}
         setToFilterYearAndMonth={setToFilterYearAndMonth}
-        typeValue={toFilterType}
-        setToFilterType={setToFilterType}
+        typeValue={toFilterTypeName}
+        setToFilterTypeName={setToFilterTypeName}
       />
       <BillsTable data={tableData} />
     </Box>

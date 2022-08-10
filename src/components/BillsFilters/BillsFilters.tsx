@@ -23,13 +23,13 @@ type Props = {
   dateValue: ToFilterYearAndMonth;
   typeValue: BillTypeName[];
   setToFilterYearAndMonth: (date: ToFilterYearAndMonth) => void;
-  setToFilterType: (date: BillTypeName[]) => void;
+  setToFilterTypeName: (date: BillTypeName[]) => void;
 };
 export const BillsFilters: FC<Props> = ({
   dateValue,
   setToFilterYearAndMonth,
   typeValue,
-  setToFilterType,
+  setToFilterTypeName,
 }) => {
   const [date, setDate] = useState<ToFilterYearAndMonth | null>(dateValue);
 
@@ -43,7 +43,7 @@ export const BillsFilters: FC<Props> = ({
     const valueArr = typeof value === 'string' ? value.split(',') : value;
 
     if (valueArr.length) {
-      setToFilterType(valueArr as BillTypeName[]);
+      setToFilterTypeName(valueArr as BillTypeName[]);
     }
   };
 

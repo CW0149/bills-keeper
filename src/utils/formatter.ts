@@ -10,7 +10,10 @@ export const getFormatBillData = (
   }, {} as Record<Category['id'], Category>);
 
   return bills.map((bill) => ({
-    time: new Date(Number(bill.time)).toISOString(),
+    time: `${new Date(Number(bill.time)).toISOString()} | ${new Date(
+      Number(bill.time)
+    ).toLocaleDateString()}`,
+    timeStamp: Number(bill.time),
     typeName: typeToTypeName[bill.type],
     name: cateIdToCate[bill.category]?.name || bill.category,
     amount: `${Number(bill.amount).toFixed(2)}￥`,

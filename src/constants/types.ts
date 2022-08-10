@@ -16,7 +16,10 @@ export type Category = {
 
 export type FormattedBill = {
   time: string;
+  timeStamp: number;
   typeName: BillTypeName;
   name: Category['name'];
   amount: string;
 };
+
+export type ToFilterYearAndMonth = [number, number] | null;

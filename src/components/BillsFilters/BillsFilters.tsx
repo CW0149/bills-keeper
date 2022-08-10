@@ -48,7 +48,7 @@ export const BillsFilters: FC<Props> = ({
   };
 
   return (
-    <Box mb={2}>
+    <Box mb={1}>
       <LocalizationProvider dateAdapter={AdapterDateFns} adapterLocale={zhCN}>
         <DatePicker
           views={['year', 'month']}

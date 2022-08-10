@@ -8,7 +8,7 @@ import {
   TableRow,
 } from '@mui/material';
 import { FC } from 'react';
-import { FormattedBill } from '../../constants';
+import { CURRENCY, FormattedBill } from '../../constants';
 
 type Props = {
   data: FormattedBill[];
@@ -16,17 +16,14 @@ type Props = {
 
 export const BillsTable: FC<Props> = ({ data }) => {
   return (
-    <TableContainer
-      sx={{ maxHeight: 'calc(100vh - 100px)', maxWidth: 800 }}
-      component={Paper}
-    >
+    <TableContainer sx={{ maxHeight: 'calc(100vh - 100px)' }} component={Paper}>
       <Table stickyHeader aria-label="bills table">
         <TableHead>
           <TableRow>
             <TableCell>名称</TableCell>
             <TableCell align="center">日期</TableCell>
             <TableCell align="center">类别</TableCell>
-            <TableCell align="right">金额</TableCell>
+            <TableCell align="right">金额({CURRENCY})</TableCell>
           </TableRow>
         </TableHead>
         <TableBody>

@@ -17,6 +17,7 @@ export type Category = {
 export type FormattedBill = {
   time: string;
   timeStamp: number;
+  type: Bill['type'];
   typeName: BillTypeName;
   name: Category['name'];
   amount: string;

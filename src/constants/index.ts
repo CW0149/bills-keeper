@@ -15,3 +15,5 @@ export const typeOptions: TypeOption[] = Object.keys(typeToTypeName).map(
 );
 
 export const DEFAULT_TYPE_SELECTED = typeOptions.map((item) => item.name);
+
+export const CURRENCY = '￥';

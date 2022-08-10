@@ -1,6 +1,9 @@
-import { Box } from '@mui/material';
+import { Box, Divider, Paper, Typography } from '@mui/material';
+import { green, grey, lightGreen } from '@mui/material/colors';
+import { spawn } from 'child_process';
 import { endOfMonth, startOfMonth } from 'date-fns';
-import { useEffect, useMemo, useState } from 'react';
+import { IncomingMessage } from 'http';
+import { FC, useEffect, useMemo, useState } from 'react';
 import { usePapaParse } from 'react-papaparse';
 import { BillsFilters } from './components/BillsFilters';
 import { BillsTable } from './components/BillsTable';
@@ -8,12 +11,110 @@ import {
   Bill,
   BillTypeName,
   Category,
+  CURRENCY,
   DEFAULT_TYPE_SELECTED,
   FormattedBill,
   ToFilterYearAndMonth,
+  typeToTypeName,
 } from './constants';
-import { getFormatBillData, getGroupedCategories } from './utils/formatter';
+import {
+  formatCurrency,
+  getFormatBillData,
+  getGroupedCategories,
+} from './utils/formatter';
 import { fetchBills, fetchCategories } from './utils/request';
+
+type BillSummaryProps = {
+  billsList: FormattedBill[];
+};
+const BillSummary: FC<BillSummaryProps> = ({ billsList }) => {
+  const amountSumForCates: Record<string, any> = {
+    total: 0,
+    '0': { total: 0, items: {} },
+    '1': { total: 0, items: {} },
+  };
+  billsList.forEach((bill) => {
+    const { amount, type, name } = bill;
+    const amountNum = type === '0' ? -Number(amount) : Number(amount);
+
+    amountSumForCates.total += amountNum;
+
+    const typeSum = amountSumForCates[type];
+    const { total: typeSumTotal, items: typeSumItems } = typeSum;
+
+    typeSum.total = typeSumTotal + amountNum;
+    typeSumItems[name] = typeSumItems[name]
+      ? typeSumItems[name] + amountNum
+      : amountNum;
+  });
+
+  const outcomeSummary = amountSumForCates['0'];
+  const { total: outcomeTotal } = outcomeSummary;
+
+  const incomeSummary = amountSumForCates['1'];
+  const { total: incomeTotal } = incomeSummary;
+
+  const outcomeItems = Object.keys(outcomeSummary.items).map((cateName) => [
+    cateName,
+    outcomeSummary.items[cateName],
+  ]);
+  const incomeItems = Object.keys(incomeSummary.items).map((cateName) => [
+    cateName,
+    incomeSummary.items[cateName],
+  ]);
+
+  return (
+    <Box mt={2} mb={2} component={Paper} p={2}>
+      <Typography>
+        <Box component="span" mr={2}>
+          总{typeToTypeName['1']}
+          {formatCurrency(incomeTotal)}
+        </Box>
+
+        <Box component="span" mr={2}>
+          总{typeToTypeName['0']}
+          {formatCurrency(outcomeTotal)}
+        </Box>
+
+        <Box component="span" mr={2}>
+          净收入{formatCurrency(amountSumForCates.total)}
+        </Box>
+      </Typography>
+
+      {!!outcomeTotal && (
+        <>
+          <Divider sx={{ mt: 0.5, mb: 0.5 }} />
+
+          <Typography>
+            <span>{typeToTypeName['0']}明细：</span>
+            <span>
+              {outcomeItems.map(([cateName, value]) => (
+                <span>
+                  {cateName} {formatCurrency(value)}；
+                </span>
+              ))}
+            </span>
+          </Typography>
+        </>
+      )}
+      {!!incomeTotal && (
+        <>
+          <Divider sx={{ mt: 0.5, mb: 0.5 }} />
+          <Typography>
+            <span>{typeToTypeName['1']}明细：</span>
+            <span>
+              {incomeItems.map(([cateName, value]) => (
+                <span>
+                  {cateName} {formatCurrency(value)}；
+                </span>
+              ))}
+            </span>
+          </Typography>
+        </>
+      )}
+    </Box>
+  );
+};
 
 function App() {
   const { readString } = usePapaParse();
@@ -82,13 +183,21 @@ function App() {
     });
 
   return (
-    <Box p={2}>
+    <Box
+      p={2}
+      bgcolor={lightGreen['50']}
+      height="100vh"
+      boxSizing="border-box"
+      overflow="auto"
+    >
       <BillsFilters
         dateValue={toFilterYearAndMonth}
         setToFilterYearAndMonth={setToFilterYearAndMonth}
         typeValue={toFilterTypeName}
         setToFilterTypeName={setToFilterTypeName}
       />
+
+      <BillSummary billsList={tableData} />
       <BillsTable data={tableData} />
     </Box>
   );

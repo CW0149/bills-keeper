@@ -16,15 +16,20 @@ export const getFormatBillData = (
     return res;
   }, {} as Record<Category['id'], Category>);
 
-  return bills.map((bill) => ({
+  return bills.map((bill, index) => ({
+    id: index,
     time: `${new Date(Number(bill.time)).toISOString()} | ${new Date(
       Number(bill.time)
     ).toLocaleDateString()}`,
     timeStamp: Number(bill.time),
+
     type: bill.type,
     typeName: typeToTypeName[bill.type],
+
     name: cateIdToCate[bill.category]?.name || bill.category,
-    amount: `${Number(bill.amount).toFixed(2)}`,
+
+    amountStr: `${Number(bill.amount).toFixed(2)}`,
+    amount: Number(bill.amount),
   }));
 };
 

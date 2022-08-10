@@ -49,8 +49,8 @@ export const BillsSummary: FC<Props> = ({ billsList }) => {
     .sort(getComparator('desc', 'amount'));
 
   return (
-    <Box mt={2} mb={2} component={Paper} p={2}>
-      <Typography>
+    <Box mt={1} mb={1} component={Paper} p={1}>
+      <Typography fontSize="small" fontWeight="bold">
         <Box component="span" mr={2}>
           总{typeToTypeName['1']}
           {formatCurrency(incomeTotal)}
@@ -70,8 +70,8 @@ export const BillsSummary: FC<Props> = ({ billsList }) => {
         <>
           <Divider sx={{ mt: 0.5, mb: 0.5 }} />
 
-          <Typography>
-            <span>{typeToTypeName['0']}明细：</span>
+          <Typography fontSize="small">
+            <strong>{typeToTypeName['0']}明细：</strong>
             <span>
               {outcomeItems.map(({ cateName, amount }) => (
                 <span key={cateName}>
@@ -85,8 +85,8 @@ export const BillsSummary: FC<Props> = ({ billsList }) => {
       {!!incomeTotal && (
         <>
           <Divider sx={{ mt: 0.5, mb: 0.5 }} />
-          <Typography>
-            <span>{typeToTypeName['1']}明细：</span>
+          <Typography fontSize="small">
+            <strong>{typeToTypeName['1']}明细：</strong>
             <span>
               {incomeItems.map(({ cateName, amount }) => (
                 <span key={cateName}>

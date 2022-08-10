@@ -8,6 +8,7 @@ import {
   SelectChangeEvent,
   TextField,
   Chip,
+  Paper,
 } from '@mui/material';
 import { DatePicker, LocalizationProvider } from '@mui/x-date-pickers';
 import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
@@ -48,7 +49,7 @@ export const BillsFilters: FC<Props> = ({
   };
 
   return (
-    <Box mb={1}>
+    <Box component={Paper} p={1}>
       <LocalizationProvider dateAdapter={AdapterDateFns} adapterLocale={zhCN}>
         <DatePicker
           views={['year', 'month']}
@@ -65,11 +66,11 @@ export const BillsFilters: FC<Props> = ({
           onAccept={(newValue) => {
             setToFilterYearAndMonth(getDateValue(newValue));
           }}
-          renderInput={(params) => <TextField {...params} />}
+          renderInput={(params) => <TextField {...params} size="small" />}
         />
       </LocalizationProvider>
 
-      <FormControl sx={{ ml: 1, width: 160 }}>
+      <FormControl sx={{ ml: 1, width: 160 }} size="small">
         <InputLabel id="select-type-label">类别</InputLabel>
         <Select
           labelId="demo-multiple-chip-label"

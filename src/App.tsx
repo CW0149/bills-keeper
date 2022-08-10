@@ -1,120 +1,27 @@
-import { Box, Divider, Paper, Typography } from '@mui/material';
-import { green, grey, lightGreen } from '@mui/material/colors';
-import { spawn } from 'child_process';
+import { Box, SortDirection } from '@mui/material';
+import { lightGreen } from '@mui/material/colors';
 import { endOfMonth, startOfMonth } from 'date-fns';
-import { IncomingMessage } from 'http';
-import { FC, useEffect, useMemo, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { usePapaParse } from 'react-papaparse';
 import { BillsFilters } from './components/BillsFilters';
+import { BillsSummary } from './components/BillsSummary';
 import { BillsTable } from './components/BillsTable';
 import {
   Bill,
   BillTypeName,
   Category,
-  CURRENCY,
   DEFAULT_TYPE_SELECTED,
   FormattedBill,
+  TableHeader,
   ToFilterYearAndMonth,
-  typeToTypeName,
 } from './constants';
+import { getComparator } from './utils';
 import {
-  formatCurrency,
   getFormatBillData,
   getGroupedCategories,
-} from './utils/formatter';
-import { fetchBills, fetchCategories } from './utils/request';
-
-type BillSummaryProps = {
-  billsList: FormattedBill[];
-};
-const BillSummary: FC<BillSummaryProps> = ({ billsList }) => {
-  const amountSumForCates: Record<string, any> = {
-    total: 0,
-    '0': { total: 0, items: {} },
-    '1': { total: 0, items: {} },
-  };
-  billsList.forEach((bill) => {
-    const { amount, type, name } = bill;
-    const amountNum = type === '0' ? -Number(amount) : Number(amount);
-
-    amountSumForCates.total += amountNum;
-
-    const typeSum = amountSumForCates[type];
-    const { total: typeSumTotal, items: typeSumItems } = typeSum;
-
-    typeSum.total = typeSumTotal + amountNum;
-    typeSumItems[name] = typeSumItems[name]
-      ? typeSumItems[name] + amountNum
-      : amountNum;
-  });
-
-  const outcomeSummary = amountSumForCates['0'];
-  const { total: outcomeTotal } = outcomeSummary;
-
-  const incomeSummary = amountSumForCates['1'];
-  const { total: incomeTotal } = incomeSummary;
-
-  const outcomeItems = Object.keys(outcomeSummary.items).map((cateName) => [
-    cateName,
-    outcomeSummary.items[cateName],
-  ]);
-  const incomeItems = Object.keys(incomeSummary.items).map((cateName) => [
-    cateName,
-    incomeSummary.items[cateName],
-  ]);
-
-  return (
-    <Box mt={2} mb={2} component={Paper} p={2}>
-      <Typography>
-        <Box component="span" mr={2}>
-          总{typeToTypeName['1']}
-          {formatCurrency(incomeTotal)}
-        </Box>
-
-        <Box component="span" mr={2}>
-          总{typeToTypeName['0']}
-          {formatCurrency(outcomeTotal)}
-        </Box>
-
-        <Box component="span" mr={2}>
-          净收入{formatCurrency(amountSumForCates.total)}
-        </Box>
-      </Typography>
-
-      {!!outcomeTotal && (
-        <>
-          <Divider sx={{ mt: 0.5, mb: 0.5 }} />
-
-          <Typography>
-            <span>{typeToTypeName['0']}明细：</span>
-            <span>
-              {outcomeItems.map(([cateName, value]) => (
-                <span>
-                  {cateName} {formatCurrency(value)}；
-                </span>
-              ))}
-            </span>
-          </Typography>
-        </>
-      )}
-      {!!incomeTotal && (
-        <>
-          <Divider sx={{ mt: 0.5, mb: 0.5 }} />
-          <Typography>
-            <span>{typeToTypeName['1']}明细：</span>
-            <span>
-              {incomeItems.map(([cateName, value]) => (
-                <span>
-                  {cateName} {formatCurrency(value)}；
-                </span>
-              ))}
-            </span>
-          </Typography>
-        </>
-      )}
-    </Box>
-  );
-};
+  fetchBills,
+  fetchCategories,
+} from './utils';
 
 function App() {
   const { readString } = usePapaParse();
@@ -124,8 +31,14 @@ function App() {
   const [toFilterTypeName, setToFilterTypeName] = useState<BillTypeName[]>(
     DEFAULT_TYPE_SELECTED
   );
+  const [billOrderBy, setBillOrderBy] = useState<TableHeader['id'] | symbol>(
+    ''
+  );
+  const [billOrder, setBillOrder] = useState<SortDirection>(false);
+  const [tableData, setTableData] = useState(billsList);
+  const [fetchingBills, setFetchingBills] = useState(false);
 
-  const tableData = useMemo(() => {
+  useEffect(() => {
     const filterConditions = [];
 
     if (toFilterYearAndMonth) {
@@ -144,11 +57,20 @@ function App() {
       toFilterTypeName.includes(bill.typeName)
     );
 
-    return filterConditions.reduce((res, fn) => res.filter(fn), billsList);
+    setTableData(
+      filterConditions.reduce((res, fn) => res.filter(fn), billsList)
+    );
   }, [billsList, toFilterTypeName, toFilterYearAndMonth]);
 
   useEffect(() => {
+    setTableData([...tableData.sort(getComparator(billOrder, billOrderBy))]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [billOrder, billOrderBy]);
+
+  useEffect(() => {
     const getData = async () => {
+      setFetchingBills(true);
+
       const billsString = await fetchBills();
       const categoriesString = await fetchCategories();
 
@@ -161,6 +83,8 @@ function App() {
       getGroupedCategories(billsList);
 
       setBillsList(billsList);
+
+      setFetchingBills(false);
     };
 
     getData();
@@ -184,7 +108,7 @@ function App() {
 
   return (
     <Box
-      p={2}
+      p={1}
       bgcolor={lightGreen['50']}
       height="100vh"
       boxSizing="border-box"
@@ -197,8 +121,15 @@ function App() {
         setToFilterTypeName={setToFilterTypeName}
       />
 
-      <BillSummary billsList={tableData} />
-      <BillsTable data={tableData} />
+      <BillsSummary billsList={tableData} />
+      <BillsTable
+        data={tableData}
+        order={billOrder}
+        setOrder={setBillOrder}
+        orderBy={billOrderBy}
+        setOrderBy={setBillOrderBy}
+        fetchingBills={fetchingBills}
+      />
     </Box>
   );
 }

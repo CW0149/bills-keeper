@@ -54,3 +54,5 @@ export const BILLS_TABLE_HEADER: (TableHeader & {
 
 // UI related
 export const COMPONENT_SIZE = 'small';
+export const MAX_TABLE_HEIGHT = 'calc(100vh - 190px)';
+export const TABLE_XS_WHEN_ADDING_BILL = 6;

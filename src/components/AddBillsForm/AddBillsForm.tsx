@@ -1,26 +1,34 @@
 import { Add } from '@mui/icons-material';
 import { Box, Button, Paper, useTheme } from '@mui/material';
 import { FC, useState } from 'react';
-import { Category, CateOption, TypeOption } from '../../constants';
+import {
+  Category,
+  CateOption,
+  MAX_TABLE_HEIGHT,
+  ToAddBillsData,
+  TypeOption,
+} from '../../constants';
 import { getKeyToCategories } from '../../utils';
 import { AddBillItem } from './AddBillItem';
 
 type Props = {
   categories: Category[];
+  addBillsData: (data: ToAddBillsData) => Promise<unknown>;
 };
-export const AddBillsForm: FC<Props> = ({ categories }) => {
+
+type NewBill = {
+  typeOption?: TypeOption;
+  cateOption?: CateOption;
+  amount?: number;
+  id: number;
+};
+
+export const AddBillsForm: FC<Props> = ({ categories, addBillsData }) => {
   const theme = useTheme();
 
   const typeToCategories = getKeyToCategories(categories, 'type');
 
-  const [newBills, setNewBills] = useState<
-    {
-      typeOption?: TypeOption;
-      cateOption?: CateOption;
-      amount?: number;
-      id: number;
-    }[]
-  >([]);
+  const [newBills, setNewBills] = useState<NewBill[]>([]);
 
   const updateNewBills = (index: number, data: Record<string, any>) => {
     const newList = newBills.map((bill, i) => {
@@ -49,8 +57,80 @@ export const AddBillsForm: FC<Props> = ({ categories }) => {
     setNewBills(newBills.filter((item) => item.id !== id));
   };
 
+  const isNewBillValid = (bill: NewBill) => {
+    return (
+      !!bill.amount &&
+      bill.typeOption?.id !== undefined &&
+      bill.cateOption?.label !== undefined
+    );
+  };
+
+  const confirmAdd = () => {
+    // Can add a form validation here to produce a better performance
+
+    const toAddBills = newBills.filter((bill) => isNewBillValid(bill));
+    if (!toAddBills.length) return;
+
+    const bills: ToAddBillsData['bills'] = [];
+    const categories: ToAddBillsData['categories'] = [];
+    const cateNameToId: Record<Category['name'], Category['id']> = {};
+    const typeToCateMap: Record<Category['type'], typeof cateNameToId> =
+      {} as any;
+
+    toAddBills.forEach((bill) => {
+      const { typeOption, cateOption, amount } = bill as Required<NewBill>;
+      const time = Date.now();
+
+      const { id: type } = typeOption;
+      const cateName = cateOption.label;
+      let cateId = cateOption.id;
+
+      if (!cateId) {
+        const createdId = typeToCateMap[type]?.[cateName];
+
+        if (createdId) {
+          cateId = createdId;
+        } else {
+          cateId = `randomCategoryId${Math.random()}`;
+          typeToCateMap[type] = typeToCateMap[type] || {};
+          typeToCateMap[type][cateName] = cateId;
+
+          categories.push({
+            id: cateId,
+            name: cateName,
+            type,
+          });
+        }
+      }
+
+      bills.push({
+        time: String(time),
+        type,
+        category: cateId,
+        amount: String(amount),
+      });
+    });
+
+    // We can add handler for error here for better user experience
+    addBillsData({
+      bills,
+      categories,
+    }).then(() => {
+      console.log(toAddBills, 'successfully added');
+
+      const notToAddBills = newBills.filter((bill) => !isNewBillValid(bill));
+      setNewBills(notToAddBills);
+    });
+  };
+
   return (
-    <Box component={Paper} p={1}>
+    <Box
+      component={Paper}
+      p={1}
+      maxHeight={MAX_TABLE_HEIGHT}
+      overflow="auto"
+      boxSizing="border-box"
+    >
       <Box
         display="flex"
         alignItems="center"
@@ -81,6 +161,18 @@ export const AddBillsForm: FC<Props> = ({ categories }) => {
           removeBill={removeBill}
         />
       ))}
+
+      {!!newBills.length && (
+        <Box display="flex" justifyContent="center" mt={2} mb={1}>
+          <Button
+            sx={{ width: '140px' }}
+            variant="contained"
+            onClick={confirmAdd}
+          >
+            保存
+          </Button>
+        </Box>
+      )}
     </Box>
   );
 };

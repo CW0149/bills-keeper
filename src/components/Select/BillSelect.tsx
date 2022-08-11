@@ -28,8 +28,13 @@ export const BillSelect: FC<Props> = ({
         multiple={multiple}
         value={selected}
         onChange={(e, newValue) => {
-          console.log(newValue);
           onChange((multiple ? newValue : [newValue]) as typeof value);
+        }}
+        onBlur={(e: any) => {
+          const value = e.target.value;
+          if (freeSolo && !options.find((option) => option.label === value)) {
+            onChange([{ label: value.trim() }] as typeof value);
+          }
         }}
         renderInput={(params) => <TextField {...params} label={label} />}
         options={options}

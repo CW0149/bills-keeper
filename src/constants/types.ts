@@ -20,7 +20,6 @@ export type Category = {
 };
 
 export type FormattedBill = {
-  id: number;
   time: string;
   timeStamp: number;
   type: Bill['type'];
@@ -61,4 +60,9 @@ export type SelectProps<ID, LABEL> = {
   width?: CSSProperties['width'];
   fullWidth?: boolean;
   freeSolo?: boolean;
+};
+
+export type ToAddBillsData = {
+  bills: Bill[];
+  categories: Category[];
 };

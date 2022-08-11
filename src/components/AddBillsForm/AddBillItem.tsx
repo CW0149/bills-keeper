@@ -90,10 +90,11 @@ export const AddBillItem: FC<Props> = ({
           fullWidth
           label={`金额${CURRENCY}`}
           size={COMPONENT_SIZE}
-          value={amount}
+          value={amount || ''}
           onChange={(e: any) => setAmount(e.target.value)}
         />
       </Grid>
+
       <Grid item xs={1} textAlign="right">
         <Box>
           <IconButton onClick={() => removeBill(id)}>

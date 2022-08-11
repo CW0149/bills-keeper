@@ -19,6 +19,7 @@ import {
   BILLS_TABLE_HEADER,
   COMPONENT_SIZE,
   FormattedBill,
+  MAX_TABLE_HEIGHT,
   TableHeader,
 } from '../../constants';
 
@@ -52,10 +53,7 @@ export const BillsTable: FC<Props> = ({
 
   return (
     <>
-      <TableContainer
-        sx={{ maxHeight: 'calc(100vh - 190px)' }}
-        component={Paper}
-      >
+      <TableContainer sx={{ maxHeight: MAX_TABLE_HEIGHT }} component={Paper}>
         <Table stickyHeader aria-label="bills table" size={COMPONENT_SIZE}>
           <TableHead>
             <TableRow>
@@ -81,7 +79,9 @@ export const BillsTable: FC<Props> = ({
           {!fetchingBills && (
             <TableBody>
               {data.map((row) => (
-                <StyledTableRow key={`${row.id}`}>
+                <StyledTableRow
+                  key={`${row.name}${row.timeStamp}${row.amount}`}
+                >
                   {BILLS_TABLE_HEADER.map((item) => (
                     <TableCell key={item.id} align={item.align}>
                       {item.toShowId ? row[item.toShowId] : row[item.id]}
@@ -95,7 +95,7 @@ export const BillsTable: FC<Props> = ({
       </TableContainer>
 
       {fetchingBills && <DataLoading />}
-      {!data.length && <NoData />}
+      {!fetchingBills && !data.length && <NoData />}
     </>
   );
 };

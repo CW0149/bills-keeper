@@ -13,13 +13,13 @@ import {
   DEFAULT_TYPE_SELECTED,
   FormattedBill,
   TableHeader,
+  TABLE_XS_WHEN_ADDING_BILL,
+  ToAddBillsData,
   ToFilterYearAndMonth,
   TypeOption,
 } from './constants';
 import { getComparator } from './utils';
 import { getFormatBillData, fetchBills, fetchCategories } from './utils';
-
-const TABLE_XS_WHEN_ADDING_BILL = 6;
 
 function App() {
   const { readString } = usePapaParse();
@@ -105,6 +105,20 @@ function App() {
       }
     });
 
+  const addBillsData = (toAddData: ToAddBillsData): Promise<any> => {
+    return new Promise((resolve) => {
+      const newCategories = [...toAddData.categories, ...categories];
+
+      setCategories(newCategories);
+      setBillsList([
+        ...getFormatBillData(toAddData.bills, newCategories),
+        ...billsList,
+      ]);
+
+      resolve('success');
+    });
+  };
+
   return (
     <Box
       p={1}
@@ -134,7 +148,7 @@ function App() {
         </Grid>
 
         <Grid item xs={12 - TABLE_XS_WHEN_ADDING_BILL}>
-          <AddBillsForm categories={categories} />
+          <AddBillsForm categories={categories} addBillsData={addBillsData} />
         </Grid>
       </Grid>
     </Box>

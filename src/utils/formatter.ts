@@ -18,7 +18,6 @@ export const getFormatBillData = (
   }, {} as Record<Category['id'], Category>);
 
   return bills.map((bill, index) => ({
-    id: index,
     time: `${new Date(Number(bill.time)).toISOString()} | ${new Date(
       Number(bill.time)
     ).toLocaleDateString()}`,

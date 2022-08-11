@@ -58,7 +58,9 @@ export const BillsFilters: FC<Props> = ({
         label="类别"
         width="240px"
         value={typeValue}
-        onChange={setToFilterTypeOptions}
+        onChange={(options) =>
+          options.length && setToFilterTypeOptions(options)
+        }
         options={typeOptions}
         multiple={true}
       />

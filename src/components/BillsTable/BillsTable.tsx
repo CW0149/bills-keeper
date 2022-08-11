@@ -17,6 +17,7 @@ import {
 import { FC } from 'react';
 import {
   BILLS_TABLE_HEADER,
+  COMPONENT_SIZE,
   FormattedBill,
   TableHeader,
 } from '../../constants';
@@ -55,7 +56,7 @@ export const BillsTable: FC<Props> = ({
         sx={{ maxHeight: 'calc(100vh - 190px)' }}
         component={Paper}
       >
-        <Table stickyHeader aria-label="bills table" size="small">
+        <Table stickyHeader aria-label="bills table" size={COMPONENT_SIZE}>
           <TableHead>
             <TableRow>
               {BILLS_TABLE_HEADER.map((headCell) => (

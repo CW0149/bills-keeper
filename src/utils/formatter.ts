@@ -1,10 +1,11 @@
 import {
   Bill,
+  BillTypeName,
   Category,
   CURRENCY,
   FormattedBill,
   GroupedCategories,
-  typeToTypeName,
+  Type,
 } from '../constants';
 
 export const getFormatBillData = (
@@ -24,8 +25,9 @@ export const getFormatBillData = (
     timeStamp: Number(bill.time),
 
     type: bill.type,
-    typeName: typeToTypeName[bill.type],
+    typeName: Type[bill.type] as BillTypeName,
 
+    category: bill.category,
     name: cateIdToCate[bill.category]?.name || bill.category,
 
     amountStr: `${Number(bill.amount).toFixed(2)}`,
@@ -33,22 +35,25 @@ export const getFormatBillData = (
   }));
 };
 
-export const getGroupedCategories = (
-  data: FormattedBill[]
-): GroupedCategories => {
-  const result = data.reduce((res, item) => {
-    const { type } = item;
+export const getKeyToCategories = (
+  data: Category[],
+  key: keyof Category
+): GroupedCategories =>
+  data.reduce((res, item) => {
+    const valueOfKey = item[key];
 
-    const set = res[type] || new Set([]);
-    set.add(item);
-
-    res[type] = set;
+    res[valueOfKey] = res[valueOfKey] || [];
+    res[valueOfKey].push(item);
 
     return res;
-  }, {} as any);
+  }, {} as GroupedCategories);
 
-  return result;
-};
+export const deGroupCategories = (data: GroupedCategories): Category[] =>
+  Object.keys(data).reduce((res, key) => {
+    res = [...res, ...data[key]];
+
+    return res;
+  }, [] as Category[]);
 
 export const formatCurrency = (
   amount: string | number,

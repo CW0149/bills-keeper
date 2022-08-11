@@ -1,41 +1,40 @@
-import { Box, SortDirection } from '@mui/material';
+import { Box, Grid, SortDirection } from '@mui/material';
 import { lightGreen } from '@mui/material/colors';
 import { endOfMonth, startOfMonth } from 'date-fns';
 import { useEffect, useState } from 'react';
 import { usePapaParse } from 'react-papaparse';
+import { AddBillsForm } from './components/AddBillsForm';
 import { BillsFilters } from './components/BillsFilters';
 import { BillsSummary } from './components/BillsSummary';
 import { BillsTable } from './components/BillsTable';
 import {
   Bill,
-  BillTypeName,
   Category,
   DEFAULT_TYPE_SELECTED,
   FormattedBill,
   TableHeader,
   ToFilterYearAndMonth,
+  TypeOption,
 } from './constants';
 import { getComparator } from './utils';
-import {
-  getFormatBillData,
-  getGroupedCategories,
-  fetchBills,
-  fetchCategories,
-} from './utils';
+import { getFormatBillData, fetchBills, fetchCategories } from './utils';
+
+const TABLE_XS_WHEN_ADDING_BILL = 6;
 
 function App() {
   const { readString } = usePapaParse();
   const [billsList, setBillsList] = useState([] as FormattedBill[]);
   const [toFilterYearAndMonth, setToFilterYearAndMonth] =
     useState<ToFilterYearAndMonth>(null);
-  const [toFilterTypeName, setToFilterTypeName] = useState<BillTypeName[]>(
+  const [toFilterTypeOptions, setToFilterTypeOptions] = useState<TypeOption[]>(
     DEFAULT_TYPE_SELECTED
   );
   const [billOrderBy, setBillOrderBy] = useState<TableHeader['id'] | symbol>(
     ''
   );
-  const [billOrder, setBillOrder] = useState<SortDirection>(false);
   const [tableData, setTableData] = useState(billsList);
+  const [categories, setCategories] = useState<Category[]>([]);
+  const [billOrder, setBillOrder] = useState<SortDirection>(false);
   const [fetchingBills, setFetchingBills] = useState(false);
 
   useEffect(() => {
@@ -53,14 +52,15 @@ function App() {
       );
     }
 
-    filterConditions.push((bill: FormattedBill) =>
-      toFilterTypeName.includes(bill.typeName)
+    filterConditions.push(
+      (bill: FormattedBill) =>
+        !!toFilterTypeOptions.find((option) => option.label === bill.typeName)
     );
 
     setTableData(
       filterConditions.reduce((res, fn) => res.filter(fn), billsList)
     );
-  }, [billsList, toFilterTypeName, toFilterYearAndMonth]);
+  }, [billsList, toFilterTypeOptions, toFilterYearAndMonth]);
 
   useEffect(() => {
     setTableData([...tableData.sort(getComparator(billOrder, billOrderBy))]);
@@ -78,10 +78,9 @@ function App() {
       const categoriesData = (await readCsvString(
         categoriesString
       )) as Category[];
-
       const billsList = getFormatBillData(billsData, categoriesData);
-      getGroupedCategories(billsList);
 
+      setCategories(categoriesData);
       setBillsList(billsList);
 
       setFetchingBills(false);
@@ -117,19 +116,27 @@ function App() {
       <BillsFilters
         dateValue={toFilterYearAndMonth}
         setToFilterYearAndMonth={setToFilterYearAndMonth}
-        typeValue={toFilterTypeName}
-        setToFilterTypeName={setToFilterTypeName}
+        typeValue={toFilterTypeOptions}
+        setToFilterTypeOptions={setToFilterTypeOptions}
       />
 
       <BillsSummary billsList={tableData} />
-      <BillsTable
-        data={tableData}
-        order={billOrder}
-        setOrder={setBillOrder}
-        orderBy={billOrderBy}
-        setOrderBy={setBillOrderBy}
-        fetchingBills={fetchingBills}
-      />
+      <Grid container spacing={1}>
+        <Grid item xs={TABLE_XS_WHEN_ADDING_BILL}>
+          <BillsTable
+            data={tableData}
+            order={billOrder}
+            setOrder={setBillOrder}
+            orderBy={billOrderBy}
+            setOrderBy={setBillOrderBy}
+            fetchingBills={fetchingBills}
+          />
+        </Grid>
+
+        <Grid item xs={12 - TABLE_XS_WHEN_ADDING_BILL}>
+          <AddBillsForm categories={categories} />
+        </Grid>
+      </Grid>
     </Box>
   );
 }

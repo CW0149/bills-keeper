@@ -8,19 +8,19 @@ import {
 
 export * from './types';
 
-export const typeToTypeName: Record<BillType, BillTypeName> = {
-  '0': '支出',
-  '1': '收入',
-};
+export enum Type {
+  '支出',
+  '收入',
+}
 
-export const typeOptions: TypeOption[] = Object.keys(typeToTypeName).map(
-  (type) => ({
-    type: type as BillType,
-    name: typeToTypeName[type as BillType],
-  })
-);
+export const typeOptions: TypeOption[] = Object.keys(Type)
+  .filter((key: unknown) => !isNaN(key as number))
+  .map((id: unknown) => ({
+    id: id as BillType,
+    label: Type[id as BillType] as BillTypeName,
+  }));
 
-export const DEFAULT_TYPE_SELECTED = typeOptions.map((item) => item.name);
+export const DEFAULT_TYPE_SELECTED = typeOptions;
 
 export const CURRENCY = '￥';
 
@@ -51,3 +51,6 @@ export const BILLS_TABLE_HEADER: (TableHeader & {
     toShowId: 'amountStr',
   },
 ];
+
+// UI related
+export const COMPONENT_SIZE = 'small';

@@ -14,11 +14,13 @@ type Props = {
   rawBills: RawBill[];
   rawCategories: RawCategory[];
   bills: Bill[];
+  [key: string]: any;
 };
 export const BillsDownloader: FC<Props> = ({
   rawBills,
   rawCategories,
   bills,
+  ...rest
 }) => {
   const { CSVDownloader } = useCSVDownloader();
   const toDownloadBills = bills.map((bill) => {
@@ -33,7 +35,7 @@ export const BillsDownloader: FC<Props> = ({
   });
 
   return (
-    <Box>
+    <Box {...rest}>
       <Grid container spacing={1}>
         <Grid item>
           <CSVDownloader

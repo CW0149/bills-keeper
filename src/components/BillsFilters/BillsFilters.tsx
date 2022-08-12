@@ -61,7 +61,11 @@ export const BillsFilters: FC<Props> = ({
             setToFilterYearAndMonth(getDateValue(newValue));
           }}
           renderInput={(params) => (
-            <TextField {...params} size={COMPONENT_SIZE} />
+            <TextField
+              sx={{ width: { xs: '100%', md: 'auto' } }}
+              {...params}
+              size={COMPONENT_SIZE}
+            />
           )}
         />
       </LocalizationProvider>

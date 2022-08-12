@@ -47,11 +47,6 @@ export const billsTableHeader: BillTableHeader[] = [
     label: CATE_LABEL,
   },
   {
-    id: 'time',
-    label: TIME_LABEL,
-    toShowId: 'timeStr',
-  },
-  {
     id: 'type',
     label: TYPE_LABEL,
     toShowId: 'typeName',
@@ -61,6 +56,11 @@ export const billsTableHeader: BillTableHeader[] = [
     label: AMOUNT_LABEL,
     align: 'right',
     toShowId: 'amountStr',
+  },
+  {
+    id: 'time',
+    label: TIME_LABEL,
+    toShowId: 'timeStr',
   },
 ];
 

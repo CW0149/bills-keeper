@@ -10,7 +10,6 @@ export const BillSelect: FC<Props> = ({
   options,
   multiple,
   width,
-  fullWidth,
   freeSolo,
 }) => {
   const selected = useMemo(() => {
@@ -20,7 +19,9 @@ export const BillSelect: FC<Props> = ({
   }, [multiple, value]);
 
   return (
-    <FormControl sx={{ width }} fullWidth={fullWidth}>
+    <FormControl
+      sx={{ width: { xs: '100%', md: width }, mb: { xs: 1, md: 0 } }}
+    >
       <Autocomplete
         clearIcon={false}
         freeSolo={freeSolo}

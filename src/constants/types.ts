@@ -23,7 +23,6 @@ export type SelectProps<ID, LABEL> = {
   multiple?: boolean;
   valueComponent?: OverridableComponent<any>;
   width?: CSSProperties['width'];
-  fullWidth?: boolean;
   freeSolo?: boolean;
 };
 

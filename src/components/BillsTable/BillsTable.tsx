@@ -126,7 +126,7 @@ const NoData: FC = () => {
       justifyContent="center"
       component={Paper}
       p={2}
-      height={400}
+      sx={{ height: { xs: 60, md: 400 } }}
     >
       <Typography>无数据</Typography>
     </Box>

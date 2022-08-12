@@ -144,7 +144,7 @@ function App() {
       boxSizing="border-box"
       overflow="auto"
     >
-      <Box component={Paper} p={1} display="flex">
+      <Box component={Paper} p={1} display="flex" flexWrap={'wrap'}>
         <Box flex={1}>
           <BillsFilters
             dateValue={toFilterYearAndMonth}
@@ -155,13 +155,21 @@ function App() {
         </Box>
 
         <BillsDownloader
+          sx={{ display: { xs: 'none', md: 'block' } }}
           rawBills={rawBills}
           rawCategories={rawCategories}
           bills={bills}
         />
 
-        <Box ml={2}>
+        <Box
+          sx={{
+            ml: { xs: 0, md: 2 },
+            width: { xs: '100%', md: 'auto' },
+            mt: { xs: 1, md: 0 },
+          }}
+        >
           <Button
+            fullWidth
             variant="contained"
             color="warning"
             onClick={() => {
@@ -177,7 +185,7 @@ function App() {
       <BillsSummary bills={tableData} />
 
       <Grid container spacing={1}>
-        <Grid item xs={TABLE_XS_WHEN_ADDING_BILL}>
+        <Grid item xs={12} md={TABLE_XS_WHEN_ADDING_BILL}>
           <BillsTable
             data={tableData}
             order={billOrder}
@@ -188,7 +196,7 @@ function App() {
           />
         </Grid>
 
-        <Grid item xs={12 - TABLE_XS_WHEN_ADDING_BILL}>
+        <Grid item xs={12} md={12 - TABLE_XS_WHEN_ADDING_BILL}>
           <AddBillsForm categories={categories} addBillsData={addBillsData} />
         </Grid>
       </Grid>

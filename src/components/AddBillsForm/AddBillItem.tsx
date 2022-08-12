@@ -64,10 +64,9 @@ export const AddBillItem: FC<Props> = ({
 
   return (
     <Grid container spacing={1} mt={0.5}>
-      <Grid item xs={3}>
+      <Grid item xs={12} md={3}>
         <BillSelect
           label={TYPE_LABEL}
-          fullWidth
           options={typeOptions}
           value={[typeValue]}
           onChange={(newValue: TypeOption[]) => {
@@ -79,11 +78,10 @@ export const AddBillItem: FC<Props> = ({
           }}
         />
       </Grid>
-      <Grid item xs={5}>
+      <Grid item xs={12} md={5}>
         <BillSelect
           label={CATE_LABEL}
           freeSolo
-          fullWidth
           options={cateOptions}
           value={cateValue ? [cateValue] : []}
           onChange={(newValue: CateOption[]) => {
@@ -91,7 +89,7 @@ export const AddBillItem: FC<Props> = ({
           }}
         />
       </Grid>
-      <Grid item xs={3}>
+      <Grid item xs={12} md={3}>
         <TextField
           type="number"
           fullWidth

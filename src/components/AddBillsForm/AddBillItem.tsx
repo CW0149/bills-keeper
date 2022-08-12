@@ -10,7 +10,7 @@ import {
   TYPE_LABEL,
   CATE_LABEL,
 } from '../../constants';
-import { BillSelect } from '../Select';
+import { BillSelect } from '../BillsSelect';
 import { deGroupCategories, getKeyToCategories } from '../../utils';
 import { Delete } from '@mui/icons-material';
 

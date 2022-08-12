@@ -10,7 +10,7 @@ import {
   typeOptions,
   TYPE_LABEL,
 } from '../../constants';
-import { BillSelect } from '../Select';
+import { BillSelect } from '../BillsSelect';
 
 type Props = {
   dateValue: ToFilterYearAndMonth;

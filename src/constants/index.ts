@@ -15,9 +15,9 @@ export const TABLE_XS_WHEN_ADDING_BILL = 6;
 
 export const CURRENCY = '￥';
 
-export const TYPE_LABEL = '类别';
+export const TYPE_LABEL = '类型';
 export const TIME_LABEL = '时间';
-export const CATE_LABEL = '名称';
+export const CATE_LABEL = '分类';
 export const AMOUNT_LABEL = `金额${CURRENCY}`;
 
 // Bills types

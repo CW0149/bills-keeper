@@ -2,6 +2,7 @@
   "name": "bills-keeper",
   "version": "0.1.0",
   "private": true,
+  "homepage": "/bills-keeper",
   "dependencies": {
     "@emotion/react": "^11.10.0",
     "@emotion/styled": "^11.10.0",
@@ -26,8 +27,8 @@
   "scripts": {
     "start": "react-scripts start",
     "build": "react-scripts build",
-    "test": "react-scripts test",
-    "eject": "react-scripts eject"
+    "deploy": "source .env.local && npm run build && rm -rf $DEPLOY_PATH && mv build $DEPLOY_PATH",
+    "test": "react-scripts test"
   },
   "eslintConfig": {
     "extends": [

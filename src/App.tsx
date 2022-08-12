@@ -1,4 +1,5 @@
 import {
+  alpha,
   Box,
   Button,
   Grid,
@@ -6,7 +7,7 @@ import {
   Paper,
   SortDirection,
 } from '@mui/material';
-import { lightGreen } from '@mui/material/colors';
+import { blue } from '@mui/material/colors';
 import { endOfMonth, startOfMonth } from 'date-fns';
 import { useEffect, useMemo, useState } from 'react';
 import { usePapaParse } from 'react-papaparse';
@@ -147,12 +148,19 @@ function App() {
   return (
     <Box
       p={1}
-      bgcolor={lightGreen['50']}
+      bgcolor={alpha(blue['100'], 0.2)}
       height="100vh"
       boxSizing="border-box"
       overflow="auto"
     >
-      <Box component={Paper} p={1} display="flex" flexWrap={'wrap'}>
+      <Box
+        component={Paper}
+        display="flex"
+        flexWrap="wrap"
+        alignItems="center"
+        p={1}
+        pt={1.1}
+      >
         {/* Bill filters */}
         <Box flex={1}>
           <BillsFilters

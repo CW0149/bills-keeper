@@ -31,6 +31,19 @@ export const BillsFilters: FC<Props> = ({
 
   return (
     <>
+      <BillSelect
+        label={TYPE_LABEL}
+        width="240px"
+        value={typeValue}
+        onChange={(options) =>
+          options.length && setToFilterTypeOptions(options)
+        }
+        options={typeOptions}
+        multiple={true}
+      />
+
+      <Box component="span" mr={1} />
+
       <LocalizationProvider dateAdapter={AdapterDateFns} adapterLocale={zhCN}>
         <DatePicker
           views={['year', 'month']}
@@ -52,19 +65,6 @@ export const BillsFilters: FC<Props> = ({
           )}
         />
       </LocalizationProvider>
-
-      <Box component="span" mr={1} />
-
-      <BillSelect
-        label={TYPE_LABEL}
-        width="240px"
-        value={typeValue}
-        onChange={(options) =>
-          options.length && setToFilterTypeOptions(options)
-        }
-        options={typeOptions}
-        multiple={true}
-      />
     </>
   );
 };

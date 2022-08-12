@@ -4,6 +4,7 @@ import {
   CateOption,
   COMPONENT_SIZE,
   CURRENCY,
+  Types,
   TypeOption,
   typeOptions,
 } from '../../constants';
@@ -91,7 +92,12 @@ export const AddBillItem: FC<Props> = ({
           label={`金额${CURRENCY}`}
           size={COMPONENT_SIZE}
           value={amount || ''}
-          onChange={(e: any) => setAmount(e.target.value)}
+          inputProps={{ min: typeValue?.id === Types.OUTCOME ? 0 : 1 }}
+          onChange={(e: any) =>
+            setAmount(
+              Number(Number(e.target.value as unknown as number)?.toFixed(2))
+            )
+          }
         />
       </Grid>
 

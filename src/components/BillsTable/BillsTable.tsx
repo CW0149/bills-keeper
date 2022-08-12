@@ -16,19 +16,21 @@ import {
 } from '@mui/material';
 import { FC } from 'react';
 import {
-  BILLS_TABLE_HEADER,
+  billsTableHeader,
   COMPONENT_SIZE,
-  FormattedBill,
+  Bill,
   MAX_TABLE_HEIGHT,
-  TableHeader,
+  BillTableHeader,
 } from '../../constants';
 
+type HeaderId = BillTableHeader['id'];
+
 type Props = {
-  data: FormattedBill[];
+  data: Bill[];
   order: SortDirection;
-  orderBy: TableHeader['id'] | symbol;
+  orderBy: HeaderId;
   setOrder: (direction: SortDirection) => void;
-  setOrderBy: (id: TableHeader['id']) => void;
+  setOrderBy: (id: HeaderId) => void;
   fetchingBills?: boolean;
 };
 
@@ -40,14 +42,14 @@ export const BillsTable: FC<Props> = ({
   setOrderBy,
   fetchingBills,
 }) => {
-  const handleRequestSort = (property: TableHeader['id']) => {
+  const handleRequestSort = (property: HeaderId) => {
     const isAsc = orderBy === property && order === 'asc';
     setOrder(isAsc ? 'desc' : 'asc');
     setOrderBy(property);
   };
 
   const createSortHandler =
-    (property: TableHeader['id']) => (event: React.MouseEvent<unknown>) => {
+    (property: HeaderId) => (event: React.MouseEvent<unknown>) => {
       handleRequestSort(property);
     };
 
@@ -57,7 +59,7 @@ export const BillsTable: FC<Props> = ({
         <Table stickyHeader aria-label="bills table" size={COMPONENT_SIZE}>
           <TableHead>
             <TableRow>
-              {BILLS_TABLE_HEADER.map((headCell) => (
+              {billsTableHeader.map((headCell) => (
                 <TableCell
                   key={headCell.id}
                   align={headCell.align}
@@ -79,10 +81,8 @@ export const BillsTable: FC<Props> = ({
           {!fetchingBills && (
             <TableBody>
               {data.map((row) => (
-                <StyledTableRow
-                  key={`${row.name}${row.timeStamp}${row.amount}`}
-                >
-                  {BILLS_TABLE_HEADER.map((item) => (
+                <StyledTableRow key={`${row.name}${row.time}${row.amount}`}>
+                  {billsTableHeader.map((item) => (
                     <TableCell key={item.id} align={item.align}>
                       {item.toShowId ? row[item.toShowId] : row[item.id]}
                     </TableCell>

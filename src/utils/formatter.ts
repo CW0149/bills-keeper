@@ -1,30 +1,30 @@
 import {
-  Bill,
-  BillTypeName,
+  RawBill,
   Category,
   CURRENCY,
-  FormattedBill,
+  Bill,
   GroupedCategories,
-  Type,
+  typeIdToLabel,
+  RawCategory,
 } from '../constants';
 
-export const getFormatBillData = (
-  bills: Bill[],
-  categories: Category[]
-): FormattedBill[] => {
+export const getFormattedBills = (
+  bills: RawBill[],
+  categories: RawCategory[]
+): Bill[] => {
   const cateIdToCate = categories.reduce((res, cate) => {
     res[cate.id] = cate;
     return res;
-  }, {} as Record<Category['id'], Category>);
+  }, {} as Record<RawCategory['id'], RawCategory>);
 
-  return bills.map((bill, index) => ({
-    time: `${new Date(Number(bill.time)).toISOString()} | ${new Date(
+  return bills.map((bill) => ({
+    timeStr: `${new Date(Number(bill.time)).toISOString()} | ${new Date(
       Number(bill.time)
     ).toLocaleDateString()}`,
-    timeStamp: Number(bill.time),
+    time: Number(bill.time),
 
-    type: bill.type,
-    typeName: Type[bill.type] as BillTypeName,
+    type: Number(bill.type),
+    typeName: typeIdToLabel[Number(bill.type)],
 
     category: bill.category,
     name: cateIdToCate[bill.category]?.name || bill.category,
@@ -34,10 +34,14 @@ export const getFormatBillData = (
   }));
 };
 
-export const getKeyToCategories = (
-  data: Category[],
-  key: keyof Category
-): GroupedCategories =>
+export const getFormattedCategories = (categories: RawCategory[]): Category[] =>
+  categories.map((item) => ({
+    id: item.id,
+    type: Number(item.type),
+    name: item.name,
+  }));
+
+export const getKeyToCategories = (data: Category[], key: keyof Category) =>
   data.reduce((res, item) => {
     const valueOfKey = item[key];
 
@@ -47,7 +51,7 @@ export const getKeyToCategories = (
     return res;
   }, {} as GroupedCategories);
 
-export const deGroupCategories = (data: GroupedCategories): Category[] =>
+export const deGroupCategories = (data: GroupedCategories) =>
   Object.keys(data).reduce((res, key) => {
     res = [...res, ...data[key]];
 

@@ -2,11 +2,12 @@ import { Add } from '@mui/icons-material';
 import { Box, Button, Paper, useTheme } from '@mui/material';
 import { FC, useState } from 'react';
 import {
-  Category,
   CateOption,
+  Category,
   MAX_TABLE_HEIGHT,
   ToAddBillsData,
   TypeOption,
+  RawCategory,
 } from '../../constants';
 import { getKeyToCategories } from '../../utils';
 import { AddBillItem } from './AddBillItem';
@@ -69,13 +70,18 @@ export const AddBillsForm: FC<Props> = ({ categories, addBillsData }) => {
     // Can add a form validation here to produce a better performance
 
     const toAddBills = newBills.filter((bill) => isNewBillValid(bill));
-    if (!toAddBills.length) return;
+    if (!toAddBills.length) {
+      alert('没有有效的账单');
+      return;
+    }
 
     const bills: ToAddBillsData['bills'] = [];
     const categories: ToAddBillsData['categories'] = [];
-    const cateNameToId: Record<Category['name'], Category['id']> = {};
-    const typeToCateMap: Record<Category['type'], typeof cateNameToId> =
-      {} as any;
+    const cateNameToId: Record<RawCategory['name'], RawCategory['id']> = {};
+    const typeToCateMap = {} as Record<
+      RawCategory['type'],
+      typeof cateNameToId
+    >;
 
     toAddBills.forEach((bill) => {
       const { typeOption, cateOption, amount } = bill as Required<NewBill>;
@@ -98,14 +104,14 @@ export const AddBillsForm: FC<Props> = ({ categories, addBillsData }) => {
           categories.push({
             id: cateId,
             name: cateName,
-            type,
+            type: String(type),
           });
         }
       }
 
       bills.push({
         time: String(time),
-        type,
+        type: String(type),
         category: cateId,
         amount: String(amount),
       });

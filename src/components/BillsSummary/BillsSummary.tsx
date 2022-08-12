@@ -1,28 +1,28 @@
 import { Box, Divider, Paper, Typography } from '@mui/material';
 import { FC } from 'react';
-import { COMPONENT_SIZE, FormattedBill, Type } from '../../constants';
+import { COMPONENT_SIZE, Bill, typeIdToLabel, Types } from '../../constants';
 import { getComparator } from '../../utils';
 import { formatCurrency } from '../../utils/formatter';
 
 type Props = {
-  billsList: FormattedBill[];
+  bills: Bill[];
 };
-export const BillsSummary: FC<Props> = ({ billsList }) => {
+export const BillsSummary: FC<Props> = ({ bills }) => {
   const amountSumForCates: Record<string, any> = {
     total: 0,
     0: { total: 0, items: {} },
     1: { total: 0, items: {} },
   };
-  billsList.forEach((bill) => {
+  bills.forEach((bill) => {
     const { amount, type, name } = bill;
-    const amountNum = type === 0 ? -Number(amount) : Number(amount);
+    const amountNum = type === Types.OUTCOME ? -Number(amount) : Number(amount);
 
     amountSumForCates.total += amountNum;
 
     const typeSum = amountSumForCates[type];
     const { total: typeSumTotal, items: typeSumItems } = typeSum;
 
-    typeSum.total = typeSumTotal + amountNum;
+    typeSum.total = typeSumTotal + Number(amount);
     typeSumItems[name] = typeSumItems[name]
       ? typeSumItems[name] + amountNum
       : amountNum;
@@ -52,12 +52,12 @@ export const BillsSummary: FC<Props> = ({ billsList }) => {
     <Box mt={1} mb={1} component={Paper} p={1}>
       <Typography fontSize={COMPONENT_SIZE} fontWeight="bold">
         <Box component="span" mr={2}>
-          总{Type[1]}
+          总{typeIdToLabel[Types.INCOME]}
           {formatCurrency(incomeTotal)}
         </Box>
 
         <Box component="span" mr={2}>
-          总{Type[0]}
+          总{typeIdToLabel[Types.OUTCOME]}
           {formatCurrency(outcomeTotal)}
         </Box>
 
@@ -66,12 +66,12 @@ export const BillsSummary: FC<Props> = ({ billsList }) => {
         </Box>
       </Typography>
 
-      {!!outcomeTotal && (
+      {!!outcomeItems.length && (
         <>
           <Divider sx={{ mt: 0.5, mb: 0.5 }} />
 
           <Typography fontSize={COMPONENT_SIZE}>
-            <strong>{Type[0]}明细：</strong>
+            <strong>{typeIdToLabel[Types.OUTCOME]}明细：</strong>
             <span>
               {outcomeItems.map(({ cateName, amount }) => (
                 <span key={cateName}>
@@ -82,11 +82,11 @@ export const BillsSummary: FC<Props> = ({ billsList }) => {
           </Typography>
         </>
       )}
-      {!!incomeTotal && (
+      {!!incomeItems.length && (
         <>
           <Divider sx={{ mt: 0.5, mb: 0.5 }} />
           <Typography fontSize={COMPONENT_SIZE}>
-            <strong>{Type[1]}明细：</strong>
+            <strong>{typeIdToLabel[Types.INCOME]}明细：</strong>
             <span>
               {incomeItems.map(({ cateName, amount }) => (
                 <span key={cateName}>

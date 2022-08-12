@@ -1,4 +1,4 @@
-import { Box, TextField, Paper, Chip } from '@mui/material';
+import { Box, TextField } from '@mui/material';
 import { DatePicker, LocalizationProvider } from '@mui/x-date-pickers';
 import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
 import { FC, useState } from 'react';
@@ -29,7 +29,7 @@ export const BillsFilters: FC<Props> = ({
     value ? [value.getFullYear(), value.getMonth() + 1] : null;
 
   return (
-    <Box component={Paper} p={1}>
+    <>
       <LocalizationProvider dateAdapter={AdapterDateFns} adapterLocale={zhCN}>
         <DatePicker
           views={['year', 'month']}
@@ -64,6 +64,6 @@ export const BillsFilters: FC<Props> = ({
         options={typeOptions}
         multiple={true}
       />
-    </Box>
+    </>
   );
 };

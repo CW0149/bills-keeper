@@ -1,7 +1,7 @@
 import { Box, TextField } from '@mui/material';
 import { DatePicker, LocalizationProvider } from '@mui/x-date-pickers';
 import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
-import { FC, useState } from 'react';
+import { FC } from 'react';
 import zhCN from 'date-fns/locale/zh-CN';
 import {
   COMPONENT_SIZE,
@@ -24,8 +24,6 @@ export const BillsFilters: FC<Props> = ({
   typeValue,
   setToFilterTypeOptions,
 }) => {
-  const [date, setDate] = useState<ToFilterYearAndMonth | null>(dateValue);
-
   const getDateValue = (value: Date | null): ToFilterYearAndMonth =>
     value ? [value.getFullYear(), value.getMonth() + 1] : null;
 
@@ -46,13 +44,17 @@ export const BillsFilters: FC<Props> = ({
 
       <LocalizationProvider dateAdapter={AdapterDateFns} adapterLocale={zhCN}>
         <DatePicker
+          showToolbar={false}
+          closeOnSelect={true}
           views={['year', 'month']}
           label="年和月"
           minDate={new Date('2018-01-01')}
           maxDate={new Date()}
-          value={date}
+          value={
+            dateValue &&
+            new Date(dateValue?.[0] as number, (dateValue?.[1] as number) - 1)
+          }
           onChange={(newValue) => {
-            setDate(getDateValue(newValue));
             if (!newValue) {
               setToFilterYearAndMonth(null);
             }

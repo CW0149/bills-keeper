@@ -1,4 +1,11 @@
-import { Box, Button, Grid, Paper, SortDirection } from '@mui/material';
+import {
+  Box,
+  Button,
+  Grid,
+  IconButton,
+  Paper,
+  SortDirection,
+} from '@mui/material';
 import { lightGreen } from '@mui/material/colors';
 import { endOfMonth, startOfMonth } from 'date-fns';
 import { useEffect, useMemo, useState } from 'react';
@@ -29,6 +36,7 @@ import {
   saveRawCategories,
 } from './utils';
 import { getFormattedBills, fetchBills, fetchCategories } from './utils';
+import { UploadFile } from '@mui/icons-material';
 
 function App() {
   const { readString } = usePapaParse();
@@ -145,6 +153,7 @@ function App() {
       overflow="auto"
     >
       <Box component={Paper} p={1} display="flex" flexWrap={'wrap'}>
+        {/* Bill filters */}
         <Box flex={1}>
           <BillsFilters
             dateValue={toFilterYearAndMonth}
@@ -154,6 +163,18 @@ function App() {
           />
         </Box>
 
+        {/* Placeholder for import bills */}
+        <Box mr={1} sx={{ display: { xs: 'none', md: 'block' } }}>
+          <IconButton
+            onClick={() =>
+              alert('导入账单列表并生成bills.csv，categories.csv文件暂未做支持')
+            }
+          >
+            <UploadFile />
+          </IconButton>
+        </Box>
+
+        {/* Download bills data buttons */}
         <BillsDownloader
           sx={{ display: { xs: 'none', md: 'block' } }}
           rawBills={rawBills}
@@ -161,6 +182,7 @@ function App() {
           bills={bills}
         />
 
+        {/* Clear cache button */}
         <Box
           sx={{
             ml: { xs: 0, md: 2 },
@@ -184,6 +206,7 @@ function App() {
 
       <BillsSummary bills={tableData} />
 
+      {/* Bills list table */}
       <Grid container spacing={1}>
         <Grid item xs={12} md={TABLE_XS_WHEN_ADDING_BILL}>
           <BillsTable
@@ -196,6 +219,7 @@ function App() {
           />
         </Grid>
 
+        {/* Add bills form */}
         <Grid item xs={12} md={12 - TABLE_XS_WHEN_ADDING_BILL}>
           <AddBillsForm categories={categories} addBillsData={addBillsData} />
         </Grid>

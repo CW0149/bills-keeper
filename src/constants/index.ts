@@ -15,6 +15,11 @@ export const TABLE_XS_WHEN_ADDING_BILL = 6;
 
 export const CURRENCY = '￥';
 
+export const TYPE_LABEL = '类别';
+export const TIME_LABEL = '日期';
+export const CATE_LABEL = '名称';
+export const AMOUNT_LABEL = `金额${CURRENCY}`;
+
 // Bills types
 export enum Types {
   OUTCOME = 0,
@@ -39,24 +44,24 @@ export const DEFAULT_TYPE_SELECTED = typeOptions;
 export const billsTableHeader: BillTableHeader[] = [
   {
     id: 'name',
-    label: '名称',
+    label: CATE_LABEL,
     align: 'center',
   },
   {
     id: 'time',
-    label: '日期',
+    label: TIME_LABEL,
     align: 'center',
     toShowId: 'timeStr',
   },
   {
     id: 'type',
-    label: '类别',
+    label: TYPE_LABEL,
     align: 'center',
     toShowId: 'typeName',
   },
   {
     id: 'amount',
-    label: `金额${CURRENCY}`,
+    label: AMOUNT_LABEL,
     align: 'right',
     toShowId: 'amountStr',
   },

@@ -147,6 +147,7 @@ function App() {
       </Box>
 
       <BillsSummary bills={tableData} />
+
       <Grid container spacing={1}>
         <Grid item xs={TABLE_XS_WHEN_ADDING_BILL}>
           <BillsTable

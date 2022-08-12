@@ -8,6 +8,7 @@ import {
   ToFilterYearAndMonth,
   TypeOption,
   typeOptions,
+  TYPE_LABEL,
 } from '../../constants';
 import { BillSelect } from '../Select';
 
@@ -55,7 +56,7 @@ export const BillsFilters: FC<Props> = ({
       <Box component="span" mr={1} />
 
       <BillSelect
-        label="类别"
+        label={TYPE_LABEL}
         width="240px"
         value={typeValue}
         onChange={(options) =>

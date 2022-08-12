@@ -7,6 +7,9 @@ import {
   Types,
   TypeOption,
   typeOptions,
+  AMOUNT_LABEL,
+  TYPE_LABEL,
+  CATE_LABEL,
 } from '../../constants';
 import { BillSelect } from '../Select';
 import { deGroupCategories, getKeyToCategories } from '../../utils';
@@ -64,7 +67,7 @@ export const AddBillItem: FC<Props> = ({
     <Grid container spacing={1} mt={0.5}>
       <Grid item xs={3}>
         <BillSelect
-          label="类别"
+          label={TYPE_LABEL}
           fullWidth
           options={typeOptions}
           value={typeValue ? [typeValue] : []}
@@ -75,7 +78,7 @@ export const AddBillItem: FC<Props> = ({
       </Grid>
       <Grid item xs={5}>
         <BillSelect
-          label="名称"
+          label={CATE_LABEL}
           freeSolo
           fullWidth
           options={cateOptions}
@@ -89,7 +92,7 @@ export const AddBillItem: FC<Props> = ({
         <TextField
           type="number"
           fullWidth
-          label={`金额${CURRENCY}`}
+          label={AMOUNT_LABEL}
           size={COMPONENT_SIZE}
           value={amount || ''}
           inputProps={{ min: typeValue?.id === Types.OUTCOME ? 0 : 1 }}

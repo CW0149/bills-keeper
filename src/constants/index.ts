@@ -16,7 +16,7 @@ export const TABLE_XS_WHEN_ADDING_BILL = 6;
 export const CURRENCY = '￥';
 
 export const TYPE_LABEL = '类别';
-export const TIME_LABEL = '日期';
+export const TIME_LABEL = '时间';
 export const CATE_LABEL = '名称';
 export const AMOUNT_LABEL = `金额${CURRENCY}`;
 
@@ -45,18 +45,15 @@ export const billsTableHeader: BillTableHeader[] = [
   {
     id: 'name',
     label: CATE_LABEL,
-    align: 'center',
   },
   {
     id: 'time',
     label: TIME_LABEL,
-    align: 'center',
     toShowId: 'timeStr',
   },
   {
     id: 'type',
     label: TYPE_LABEL,
-    align: 'center',
     toShowId: 'typeName',
   },
   {

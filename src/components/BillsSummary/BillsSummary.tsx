@@ -50,19 +50,18 @@ export const BillsSummary: FC<Props> = ({ bills }) => {
 
   return (
     <Box mt={1} mb={1} component={Paper} p={1}>
-      <Typography fontSize={COMPONENT_SIZE} fontWeight="bold">
+      <Typography fontSize={COMPONENT_SIZE}>
+        <Box component="span" mr={2} fontWeight="bold">
+          净收入{formatCurrency(amountSumForCates.total)}
+        </Box>
+
         <Box component="span" mr={2}>
           总{typeIdToLabel[Types.INCOME]}
           {formatCurrency(incomeTotal)}
         </Box>
-
         <Box component="span" mr={2}>
           总{typeIdToLabel[Types.OUTCOME]}
           {formatCurrency(outcomeTotal)}
-        </Box>
-
-        <Box component="span" mr={2}>
-          净收入{formatCurrency(amountSumForCates.total)}
         </Box>
       </Typography>
 

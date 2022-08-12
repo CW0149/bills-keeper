@@ -20,7 +20,7 @@ export const getFormattedBills = (
   return bills.map((bill) => ({
     timeStr: `${new Date(Number(bill.time)).toISOString()} | ${new Date(
       Number(bill.time)
-    ).toLocaleDateString()}`,
+    ).toLocaleString()}`,
     time: Number(bill.time),
 
     type: Number(bill.type),

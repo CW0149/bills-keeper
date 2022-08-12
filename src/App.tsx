@@ -20,7 +20,13 @@ import {
   RawCategory,
   BillTableHeader,
 } from './constants';
-import { getComparator, getFormattedCategories, readCsvString } from './utils';
+import {
+  getComparator,
+  getFormattedCategories,
+  readCsvString,
+  saveRawBills,
+  saveRawCategories,
+} from './utils';
 import { getFormattedBills, fetchBills, fetchCategories } from './utils';
 
 function App() {
@@ -59,17 +65,21 @@ function App() {
     const getData = async () => {
       setFetchingBills(true);
 
-      const billsString = await fetchBills();
-      const categoriesString = await fetchCategories();
+      const unhandledBills = await fetchBills();
+      const unhandledCategories = await fetchCategories();
 
-      const rawBills = (await readCsvString(
-        readString,
-        billsString
-      )) as RawBill[];
-      const rawCategories = (await readCsvString(
-        readString,
-        categoriesString
-      )) as RawCategory[];
+      const rawBills =
+        typeof unhandledBills === 'string'
+          ? ((await readCsvString(readString, unhandledBills)) as RawBill[])
+          : unhandledBills;
+
+      const rawCategories =
+        typeof unhandledCategories === 'string'
+          ? ((await readCsvString(
+              readString,
+              unhandledCategories
+            )) as RawCategory[])
+          : unhandledCategories;
 
       setRawBills(rawBills);
       setRawCategories(rawCategories);
@@ -110,12 +120,16 @@ function App() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [billOrder, billOrderBy]);
 
-  const addBillsData = (toAddData: ToAddBillsData): Promise<any> => {
+  const addBillsData = (toAddData: ToAddBillsData): Promise<'success'> => {
     return new Promise((resolve) => {
       const newRawCategories = [...toAddData.categories, ...rawCategories];
+      const newRawBills = [...toAddData.bills, ...rawBills];
 
       setRawCategories(newRawCategories);
-      setRawBills([...toAddData.bills, ...rawBills]);
+      setRawBills(newRawBills);
+
+      saveRawCategories(newRawCategories);
+      saveRawBills(newRawBills);
 
       resolve('success');
     });

@@ -14,7 +14,7 @@ import { AddBillItem } from './AddBillItem';
 
 type Props = {
   categories: Category[];
-  addBillsData: (data: ToAddBillsData) => Promise<unknown>;
+  addBillsData: (data: ToAddBillsData) => Promise<'success' | 'failed'>;
 };
 
 type NewBill = {

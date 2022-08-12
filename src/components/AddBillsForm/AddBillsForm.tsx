@@ -8,6 +8,7 @@ import {
   ToAddBillsData,
   TypeOption,
   RawCategory,
+  typeOptions,
 } from '../../constants';
 import { getKeyToCategories } from '../../utils';
 import { AddBillItem } from './AddBillItem';
@@ -18,7 +19,7 @@ type Props = {
 };
 
 type NewBill = {
-  typeOption?: TypeOption;
+  typeOption: TypeOption;
   cateOption?: CateOption;
   amount?: number;
   id: number;
@@ -50,6 +51,7 @@ export const AddBillsForm: FC<Props> = ({ categories, addBillsData }) => {
       ...newBills,
       {
         id: Date.now(),
+        typeOption: typeOptions[0],
       },
     ]);
   };

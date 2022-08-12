@@ -3,7 +3,6 @@ import { FC, useEffect, useMemo } from 'react';
 import {
   CateOption,
   COMPONENT_SIZE,
-  CURRENCY,
   Types,
   TypeOption,
   typeOptions,
@@ -18,7 +17,7 @@ import { Delete } from '@mui/icons-material';
 type Props = {
   typeToCategories: ReturnType<typeof getKeyToCategories>;
 
-  typeValue?: TypeOption;
+  typeValue: TypeOption;
   setTypeValue: (type: TypeOption) => void;
   cateValue?: CateOption;
   setCateValue: (cate: CateOption) => void;
@@ -70,9 +69,13 @@ export const AddBillItem: FC<Props> = ({
           label={TYPE_LABEL}
           fullWidth
           options={typeOptions}
-          value={typeValue ? [typeValue] : []}
+          value={[typeValue]}
           onChange={(newValue: TypeOption[]) => {
-            setTypeValue(newValue[0]);
+            const [newOption] = newValue;
+
+            if (newOption) {
+              setTypeValue(newOption);
+            }
           }}
         />
       </Grid>

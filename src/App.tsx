@@ -1,4 +1,4 @@
-import { Box, Grid, Paper, SortDirection } from '@mui/material';
+import { Box, Button, Grid, Paper, SortDirection } from '@mui/material';
 import { lightGreen } from '@mui/material/colors';
 import { endOfMonth, startOfMonth } from 'date-fns';
 import { useEffect, useMemo, useState } from 'react';
@@ -7,7 +7,7 @@ import { AddBillsForm } from './components/AddBillsForm';
 import { BillsFilters } from './components/BillsFilters';
 import { BillsSummary } from './components/BillsSummary';
 import { BillsTable } from './components/BillsTable';
-import { Downloader } from './components/BillsDownloader';
+import { BillsDownloader } from './components/BillsDownloader';
 import {
   RawBill,
   Category,
@@ -21,6 +21,7 @@ import {
   BillTableHeader,
 } from './constants';
 import {
+  clearLocalBillsData,
   getComparator,
   getFormattedCategories,
   readCsvString,
@@ -153,11 +154,24 @@ function App() {
           />
         </Box>
 
-        <Downloader
+        <BillsDownloader
           rawBills={rawBills}
           rawCategories={rawCategories}
           bills={bills}
         />
+
+        <Box ml={2}>
+          <Button
+            variant="contained"
+            color="warning"
+            onClick={() => {
+              clearLocalBillsData();
+              window.location.reload();
+            }}
+          >
+            清除缓存
+          </Button>
+        </Box>
       </Box>
 
       <BillsSummary bills={tableData} />

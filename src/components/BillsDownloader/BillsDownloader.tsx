@@ -15,7 +15,11 @@ type Props = {
   rawCategories: RawCategory[];
   bills: Bill[];
 };
-export const Downloader: FC<Props> = ({ rawBills, rawCategories, bills }) => {
+export const BillsDownloader: FC<Props> = ({
+  rawBills,
+  rawCategories,
+  bills,
+}) => {
   const { CSVDownloader } = useCSVDownloader();
   const toDownloadBills = bills.map((bill) => {
     const labelAsKeyBill: Record<BillTableHeader['label'], any> = {};

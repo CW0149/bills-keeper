@@ -65,3 +65,8 @@ export const saveRawCategories = (
     }
   });
 };
+
+export const clearLocalBillsData = () => {
+  localStorage.removeItem(LOCAL_STORAGE_RAW_BILLS_KEY);
+  localStorage.removeItem(LOCAL_STORAGE_RAW_CATEGORIES_KEY);
+};

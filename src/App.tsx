@@ -215,7 +215,12 @@ function App() {
       <BillsSummary bills={tableData} />
 
       {/* Bills list table */}
-      <Grid container spacing={1}>
+      <Grid
+        container
+        spacing={1}
+        display="flex"
+        sx={{ flexDirection: { xs: 'column-reverse', md: 'unset' } }}
+      >
         <Grid item xs={12} md={TABLE_XS_WHEN_ADDING_BILL}>
           <BillsTable
             data={tableData}

@@ -44,3 +44,7 @@ export const readCsvString = (
       reject(err);
     }
   });
+
+export const isValidDate = (date: any) => {
+  return !isNaN(new Date(Number(date)).getTime());
+};

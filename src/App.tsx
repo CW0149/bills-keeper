@@ -161,8 +161,8 @@ function App() {
         p={1}
         pt={1.1}
       >
-        {/* Bill filters */}
-        <Box flex={1}>
+        {/* Bills filters */}
+        <Box flex={1} data-testid="bills-filters">
           <BillsFilters
             dateValue={toFilterYearAndMonth}
             setToFilterYearAndMonth={setToFilterYearAndMonth}
@@ -212,7 +212,7 @@ function App() {
         </Box>
       </Box>
 
-      <BillsSummary bills={tableData} />
+      <BillsSummary data-testid="bills-summary" bills={tableData} />
 
       {/* Bills list table */}
       <Grid
@@ -221,7 +221,12 @@ function App() {
         display="flex"
         sx={{ flexDirection: { xs: 'column-reverse', md: 'unset' } }}
       >
-        <Grid item xs={12} md={TABLE_XS_WHEN_ADDING_BILL}>
+        <Grid
+          item
+          xs={12}
+          md={TABLE_XS_WHEN_ADDING_BILL}
+          data-testid="bills-table-wrapper"
+        >
           <BillsTable
             data={tableData}
             order={billOrder}
@@ -233,7 +238,12 @@ function App() {
         </Grid>
 
         {/* Add bills form */}
-        <Grid item xs={12} md={12 - TABLE_XS_WHEN_ADDING_BILL}>
+        <Grid
+          item
+          xs={12}
+          md={12 - TABLE_XS_WHEN_ADDING_BILL}
+          data-testid="bills-add-form"
+        >
           <AddBillsForm categories={categories} addBillsData={addBillsData} />
         </Grid>
       </Grid>

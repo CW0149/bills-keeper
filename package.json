@@ -40,6 +40,9 @@
   "prettier": {
     "singleQuote": true
   },
+  "engines": {
+    "node": ">= 14.17"
+  },
   "browserslist": {
     "production": [
       ">0.2%",
@@ -55,6 +58,7 @@
   "devDependencies": {
     "eslint-config-prettier": "^8.5.0",
     "eslint-plugin-prettier": "^4.2.1",
+    "msw": "^0.44.2",
     "prettier": "^2.7.1"
   }
 }

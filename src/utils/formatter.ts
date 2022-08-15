@@ -1,3 +1,4 @@
+import { isValidDate } from '.';
 import {
   RawBill,
   Category,
@@ -18,9 +19,11 @@ export const getFormattedBills = (
   }, {} as Record<RawCategory['id'], RawCategory>);
 
   return bills.map((bill) => ({
-    timeStr: `${new Date(Number(bill.time)).toISOString()} | ${new Date(
-      Number(bill.time)
-    ).toLocaleString()}`,
+    timeStr: isValidDate(bill.time)
+      ? `${new Date(Number(bill.time)).toISOString()} | ${new Date(
+          Number(bill.time)
+        ).toLocaleString()}`
+      : '',
     time: Number(bill.time),
 
     type: Number(bill.type),

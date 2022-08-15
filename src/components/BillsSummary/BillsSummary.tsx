@@ -7,7 +7,7 @@ import { formatCurrency } from '../../utils/formatter';
 type Props = {
   bills: Bill[];
 };
-export const BillsSummary: FC<Props> = ({ bills }) => {
+export const BillsSummary: FC<Props> = ({ bills, ...rest }) => {
   const amountSumForCates: Record<string, any> = {
     total: 0,
     0: { total: 0, items: {} },
@@ -49,7 +49,7 @@ export const BillsSummary: FC<Props> = ({ bills }) => {
     .sort(getComparator('desc', 'amount'));
 
   return (
-    <Box mt={1} mb={1} component={Paper} p={1}>
+    <Box mt={1} mb={1} component={Paper} p={1} {...rest}>
       <Typography fontSize={COMPONENT_SIZE}>
         <Box component="span" mr={2} fontWeight="bold">
           净收入{formatCurrency(amountSumForCates.total)}

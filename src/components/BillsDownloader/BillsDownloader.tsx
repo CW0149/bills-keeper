@@ -46,22 +46,6 @@ export const BillsDownloader: FC<Props> = ({
             <Button variant="contained">下载全部账单</Button>
           </CSVDownloader>
         </Grid>
-        <Grid item>
-          <CSVDownloader filename={'bill'} bom={true} data={rawBills}>
-            <Button variant="contained">下载bill.csv</Button>
-          </CSVDownloader>
-        </Grid>
-        <Grid item>
-          <Button variant="contained">
-            <CSVDownloader
-              filename={'categories'}
-              bom={true}
-              data={rawCategories}
-            >
-              下载categories.csv
-            </CSVDownloader>
-          </Button>
-        </Grid>
       </Grid>
     </Box>
   );

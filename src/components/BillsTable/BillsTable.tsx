@@ -1,6 +1,7 @@
 import { styled } from '@mui/material/styles';
 import {
   Box,
+  IconButton,
   Paper,
   Skeleton,
   SortDirection,
@@ -22,6 +23,7 @@ import {
   MAX_TABLE_HEIGHT,
   BillTableHeader,
 } from '../../constants';
+import { Delete } from '@mui/icons-material';
 
 type HeaderId = BillTableHeader['id'];
 
@@ -32,6 +34,7 @@ type Props = {
   setOrder: (direction: SortDirection) => void;
   setOrderBy: (id: HeaderId) => void;
   fetchingBills?: boolean;
+  onRemove: (id: Bill['id']) => void;
 };
 
 export const BillsTable: FC<Props> = ({
@@ -41,6 +44,7 @@ export const BillsTable: FC<Props> = ({
   setOrder,
   setOrderBy,
   fetchingBills,
+  onRemove,
 }) => {
   const handleRequestSort = (property: HeaderId) => {
     const isAsc = orderBy === property && order === 'asc';
@@ -75,18 +79,24 @@ export const BillsTable: FC<Props> = ({
                   </TableSortLabel>
                 </TableCell>
               ))}
+              <TableCell align="center">操作</TableCell>
             </TableRow>
           </TableHead>
 
           {!fetchingBills && (
             <TableBody>
               {data.map((row) => (
-                <StyledTableRow key={`${row.name}${row.time}${row.amount}`}>
+                <StyledTableRow key={row.id}>
                   {billsTableHeader.map((item) => (
                     <TableCell key={item.id} align={item.align}>
                       {item.toShowId ? row[item.toShowId] : row[item.id]}
                     </TableCell>
                   ))}
+                  <TableCell align="center">
+                    <IconButton onClick={() => onRemove(row.id)}>
+                      <Delete />
+                    </IconButton>
+                  </TableCell>
                 </StyledTableRow>
               ))}
             </TableBody>

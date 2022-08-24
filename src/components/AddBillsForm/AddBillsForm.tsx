@@ -112,6 +112,7 @@ export const AddBillsForm: FC<Props> = ({ categories, addBillsData }) => {
       }
 
       bills.push({
+        id: `randomBillId${Math.random()}`,
         time: String(time),
         type: String(type),
         category: cateId,

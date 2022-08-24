@@ -19,10 +19,10 @@ export const getFormattedBills = (
   }, {} as Record<RawCategory['id'], RawCategory>);
 
   return bills.map((bill) => ({
+    id: bill.id,
+
     timeStr: isValidDate(bill.time)
-      ? `${new Date(Number(bill.time)).toISOString()} | ${new Date(
-          Number(bill.time)
-        ).toLocaleString()}`
+      ? `${new Date(Number(bill.time)).toLocaleString()}`
       : '',
     time: Number(bill.time),
 

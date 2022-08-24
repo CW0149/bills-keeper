@@ -31,6 +31,7 @@ export type BillType = 0 | 1 | number;
 export type BillTypeName = '支出' | '收入' | string;
 
 export type RawBill = {
+  id: string;
   time: string;
   type: string;
   category: string;
@@ -50,6 +51,7 @@ export type Category = {
 };
 
 export type Bill = {
+  id: string;
   timeStr: string;
   time: number;
   type: BillType;

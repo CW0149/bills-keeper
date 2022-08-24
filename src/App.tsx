@@ -66,9 +66,42 @@ function App() {
     () => getFormattedCategories(rawCategories),
     [rawCategories]
   );
-  const [tableData, setTableData] = useState(
-    bills.sort(getComparator(billOrder, billOrderBy))
-  );
+
+  // Table data
+  const tableData = useMemo(() => {
+    const filterConditions = [];
+
+    if (toFilterYearAndMonth) {
+      const [year, month] = toFilterYearAndMonth;
+      const firstDay = startOfMonth(new Date(year, month - 1));
+      const lastDay = endOfMonth(new Date(year, month - 1));
+
+      filterConditions.push(
+        (bill: Bill) =>
+          bill.time <= lastDay.getTime() && bill.time >= firstDay.getTime()
+      );
+    }
+
+    filterConditions.push(
+      (bill: Bill) =>
+        !!toFilterTypeOptions.find((option) => option.label === bill.typeName)
+    );
+
+    const filteredData = filterConditions.reduce(
+      (res, fn) => res.filter(fn),
+      bills
+    );
+
+    const sortedData = filteredData.sort(getComparator(billOrder, billOrderBy));
+
+    return sortedData;
+  }, [
+    billOrder,
+    billOrderBy,
+    bills,
+    toFilterTypeOptions,
+    toFilterYearAndMonth,
+  ]);
 
   // Get data
   useEffect(() => {
@@ -101,35 +134,6 @@ function App() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  // Filter table
-  useEffect(() => {
-    const filterConditions = [];
-
-    if (toFilterYearAndMonth) {
-      const [year, month] = toFilterYearAndMonth;
-      const firstDay = startOfMonth(new Date(year, month - 1));
-      const lastDay = endOfMonth(new Date(year, month - 1));
-
-      filterConditions.push(
-        (bill: Bill) =>
-          bill.time <= lastDay.getTime() && bill.time >= firstDay.getTime()
-      );
-    }
-
-    filterConditions.push(
-      (bill: Bill) =>
-        !!toFilterTypeOptions.find((option) => option.label === bill.typeName)
-    );
-
-    setTableData(filterConditions.reduce((res, fn) => res.filter(fn), bills));
-  }, [bills, toFilterTypeOptions, toFilterYearAndMonth]);
-
-  // Order table
-  useEffect(() => {
-    setTableData([...tableData.sort(getComparator(billOrder, billOrderBy))]);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [billOrder, billOrderBy]);
-
   const addBillsData = (toAddData: ToAddBillsData): Promise<'success'> => {
     return new Promise((resolve) => {
       const newRawCategories = [...toAddData.categories, ...rawCategories];
@@ -143,6 +147,13 @@ function App() {
 
       resolve('success');
     });
+  };
+
+  const removeBillsItem = (id: Bill['id']) => {
+    const newRawBills = rawBills.filter((bill) => bill.id !== id);
+
+    setRawBills(newRawBills);
+    saveRawBills(newRawBills);
   };
 
   return (
@@ -173,11 +184,7 @@ function App() {
 
         {/* Placeholder for import bills */}
         <Box mr={1} sx={{ display: { xs: 'none', md: 'block' } }}>
-          <IconButton
-            onClick={() =>
-              alert('导入账单列表并生成bills.csv，categories.csv文件暂未做支持')
-            }
-          >
+          <IconButton onClick={() => alert('导入账单列表暂未做支持')}>
             <UploadFile />
           </IconButton>
         </Box>
@@ -234,6 +241,7 @@ function App() {
             orderBy={billOrderBy}
             setOrderBy={setBillOrderBy}
             fetchingBills={fetchingBills}
+            onRemove={removeBillsItem}
           />
         </Grid>
 

@@ -5,14 +5,18 @@ const LOCAL_STORAGE_RAW_CATEGORIES_KEY = 'rawCategories';
 
 export const fetchBills = (): Promise<string> | RawBill[] => {
   const storedBills = localStorage.getItem(LOCAL_STORAGE_RAW_BILLS_KEY);
+  const fetchCsv = fetch(`${process.env.PUBLIC_URL}/bill.csv`).then((res) =>
+    res.text()
+  );
 
   try {
     const bills = JSON.parse(storedBills as string);
+    if (Array.isArray(bills)) return bills;
 
-    return bills;
+    return fetchCsv;
   } catch (err) {
     console.log(err);
-    return [];
+    return fetchCsv;
   }
 };
 
@@ -20,14 +24,18 @@ export const fetchCategories = (): Promise<string> | RawCategory[] => {
   const storedCategories = localStorage.getItem(
     LOCAL_STORAGE_RAW_CATEGORIES_KEY
   );
+  const fetchCsv = fetch(`${process.env.PUBLIC_URL}/categories.csv`).then(
+    (res) => res.text()
+  );
 
   try {
     const categories = JSON.parse(storedCategories as string);
+    if (Array.isArray(categories)) return categories;
 
-    return categories;
+    return fetchCsv;
   } catch (err) {
     console.log(err);
-    return [];
+    return fetchCsv;
   }
 };
 
